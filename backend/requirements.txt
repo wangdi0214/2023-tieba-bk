@@ -1,0 +1,53 @@
+# Django核心
+Django==4.2.4
+djangorestframework==3.14.0
+django-cors-headers==4.0.0
+
+# 数据库
+mysqlclient==2.1.1
+redis==4.5.5
+
+# 认证和权限
+djangorestframework-simplejwt==5.2.2
+PyJWT==2.7.0
+
+# 文件处理和图片
+Pillow==10.0.0
+django-storages==1.13.2
+boto3==1.26.153
+
+# 搜索功能
+django-haystack==3.2.1
+elasticsearch==8.8.0
+
+# 缓存和性能
+django-redis==5.2.0
+celery==5.3.1
+
+# 安全和验证
+bcrypt==4.0.1
+python-decouple==3.8
+
+# API文档
+drf-yasg==1.21.4
+coreapi==2.3.3
+
+# 测试和调试
+pytest==7.3.2
+pytest-django==4.5.2
+factory-boy==3.2.1
+Faker==18.11.2
+
+# 其他工具
+python-dateutil==2.8.2
+requests==2.31.0
+chardet==5.1.0
+
+# 开发工具
+black==23.3.0
+flake8==6.0.0
+isort==5.12.0
+
+# 部署相关
+gunicorn==21.2.0
+whitenoise==6.4.0

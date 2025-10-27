@@ -1,0 +1,1777 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>百度贴吧 - 全球最大的中文社区</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* 页面容器 */
+        .page-container {
+            display: none;
+        }
+
+        .page-container.active {
+            display: block;
+        }
+
+        /* 导航栏样式 - 百度贴吧风格 */
+        .navbar {
+            background: #3385ff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 60px;
+        }
+
+        .logo {
+            color: white;
+            font-size: 26px;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo::before {
+            content: "贴";
+            background: #ff6b6b;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .nav-center {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-tab {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+
+        .nav-tab:hover,
+        .nav-tab.active {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .search-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-input {
+            padding: 8px 40px 8px 15px;
+            border: none;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            width: 300px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .search-input:focus {
+            background: white;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 12px;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            padding: 8px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: white;
+        }
+
+        .username {
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* 主要内容区域 */
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        /* 轮播图样式 */
+        .carousel {
+            position: relative;
+            height: 200px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .carousel-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #3385ff, #66aaff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .carousel-slide.active {
+            opacity: 1;
+        }
+
+        .carousel-caption {
+            text-align: center;
+        }
+
+        .carousel-caption h2 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .carousel-caption p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .carousel-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+
+        .carousel-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* 主要内容布局 */
+        .main-content {
+            display: grid;
+            grid-template-columns: 250px 1fr 250px;
+            gap: 20px;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .content-area {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #3385ff;
+        }
+
+        .view-all {
+            color: #999;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .view-all:hover {
+            color: #3385ff;
+        }
+
+        /* 贴吧列表样式 */
+        .tieba-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .tieba-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f8f9fa;
+            transition: background-color 0.3s;
+        }
+
+        .tieba-item:last-child {
+            border-bottom: none;
+        }
+
+        .tieba-item:hover {
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            padding-left: 10px;
+            padding-right: 10px;
+            margin-left: -10px;
+            margin-right: -10px;
+        }
+
+        .tieba-icon {
+            width: 32px;
+            height: 32px;
+            background: #3385ff;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 14px;
+        }
+
+        .tieba-name {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .tieba-members {
+            font-size: 12px;
+            color: #999;
+            margin-top: 2px;
+        }
+
+        /* 帖子列表样式 */
+        .post-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .post-item {
+            padding: 15px 0;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .post-item:last-child {
+            border-bottom: none;
+        }
+
+        .post-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            text-decoration: none;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .post-title:hover {
+            color: #3385ff;
+        }
+
+        .post-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .post-author {
+            color: #3385ff;
+            font-weight: 500;
+        }
+
+        .post-tag {
+            background: #f0f7ff;
+            color: #3385ff;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+        }
+
+        /* 热门话题样式 */
+        .hot-topics {
+            margin-top: 10px;
+        }
+
+        .topic-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .topic-item:last-child {
+            border-bottom: none;
+        }
+
+        .topic-rank {
+            width: 24px;
+            height: 24px;
+            background: #ff6b6b;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .topic-rank:nth-child(2) {
+            background: #ffa726;
+        }
+
+        .topic-rank:nth-child(3) {
+            background: #66bb6a;
+        }
+
+        .topic-rank:nth-child(4) {
+            background: #42a5f5;
+        }
+
+        .topic-rank:nth-child(5) {
+            background: #ab47bc;
+        }
+
+        .topic-name {
+            font-size: 14px;
+            color: #333;
+            flex: 1;
+        }
+
+        .topic-hot {
+            font-size: 12px;
+            color: #ff6b6b;
+            font-weight: 500;
+        }
+
+        /* 页脚样式 */
+        .footer {
+            background: #f8f9fa;
+            color: #666;
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 40px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 15px;
+        }
+
+        .footer-link {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .footer-link:hover {
+            color: #3385ff;
+        }
+
+        .copyright {
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 200px 1fr 200px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .sidebar {
+                order: 2;
+            }
+            
+            .content-area {
+                order: 1;
+            }
+            
+            .nav-container {
+                padding: 0 15px;
+            }
+            
+            .search-input {
+                width: 200px;
+            }
+            
+            .nav-tabs {
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-container {
+                padding: 0 10px;
+            }
+            
+            .search-input {
+                width: 150px;
+            }
+            
+            .nav-btn {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+            
+            .carousel {
+                height: 150px;
+            }
+            
+            .carousel-caption h2 {
+                font-size: 24px;
+            }
+        }
+
+        /* 登录注册模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 123, 255, 0.3);
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #999;
+            cursor: pointer;
+        }
+
+        .modal-close:hover {
+            color: #333;
+        }
+
+        .modal-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .modal-logo h1 {
+            color: #3385ff;
+            font-size: 32px;
+            font-weight: 600;
+        }
+
+        .modal-logo p {
+            color: #6c757d;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #495057;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #3385ff;
+            box-shadow: 0 0 0 3px rgba(51, 133, 255, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #3385ff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #297acc;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(51, 133, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #6c757d;
+            border: 1px solid #dee2e6;
+            margin-top: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+
+        .form-switch {
+            text-align: center;
+            margin-top: 20px;
+            color: #6c757d;
+        }
+
+        .form-switch a {
+            color: #3385ff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .form-switch a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message {
+            color: #28a745;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* 个人中心样式 */
+        .profile-header {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3385ff, #66aaff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 32px;
+            color: white;
+        }
+
+        .user-name {
+            font-size: 24px;
+            font-weight: 600;
+            color: #3385ff;
+            margin-bottom: 10px;
+        }
+
+        .user-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 600;
+            color: #3385ff;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        /* 帖子列表 */
+        .posts-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #3385ff;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .posts-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .post-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            border-left: 4px solid #3385ff;
+            transition: all 0.3s ease;
+        }
+
+        .post-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(51, 133, 255, 0.2);
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .post-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #495057;
+            text-decoration: none;
+        }
+
+        .post-title:hover {
+            color: #3385ff;
+        }
+
+        .post-category {
+            background: #e3f2fd;
+            color: #3385ff;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .post-content {
+            color: #6c757d;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+
+        .post-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .post-action {
+            color: #999;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .post-action:hover {
+            color: #3385ff;
+        }
+
+        /* 发帖页面样式 */
+        .post-form {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-title {
+            text-align: center;
+            color: #3385ff;
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #3385ff;
+            box-shadow: 0 0 0 3px rgba(51, 133, 255, 0.1);
+        }
+
+        .form-control.error {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* 富文本编辑器 */
+        .editor-toolbar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .editor-btn {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .editor-btn:hover {
+            background: #e9ecef;
+        }
+
+        .editor-btn.active {
+            background: #3385ff;
+            color: white;
+            border-color: #3385ff;
+        }
+
+        .editor-content {
+            min-height: 200px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 14px;
+            line-height: 1.6;
+            resize: vertical;
+        }
+
+        .editor-content:focus {
+            outline: none;
+            border-color: #3385ff;
+            box-shadow: 0 0 0 3px rgba(51, 133, 255, 0.1);
+        }
+
+        /* 图片上传 */
+        .upload-area {
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            border-color: #3385ff;
+            background: #f8f9fa;
+        }
+
+        .upload-area.dragover {
+            border-color: #3385ff;
+            background: #e3f2fd;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: #dee2e6;
+            margin-bottom: 10px;
+        }
+
+        .upload-text {
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+
+        .upload-hint {
+            color: #999;
+            font-size: 12px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 30px;
+        }
+
+        .btn-cancel {
+            background: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .btn-cancel:hover {
+            background: #5a6268;
+        }
+
+        .btn-submit {
+            background: #3385ff;
+            color: white;
+            padding: 10px 30px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-submit:hover {
+            background: #297acc;
+        }
+
+        /* 加载状态 */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .btn-loading {
+            position: relative;
+            color: transparent;
+        }
+
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 50%;
+            left: 50%;
+            margin-left: -8px;
+            margin-top: -8px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-right-color: transparent;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo" onclick="showPage('home')">百度贴吧</a>
+            
+            <div class="nav-center">
+                <div class="nav-tabs">
+                    <a href="#" class="nav-tab active" onclick="showPage('home')">首页</a>
+                    <a href="#" class="nav-tab">关注</a>
+                    <a href="#" class="nav-tab">推荐</a>
+                    <a href="#" class="nav-tab">视频</a>
+                    <a href="#" class="nav-tab">图片</a>
+                </div>
+            </div>
+            
+            <div class="nav-right">
+                <div class="search-box">
+                    <input type="text" class="search-input" placeholder="搜索贴吧、帖子、用户...">
+                    <span class="search-icon">🔍</span>
+                </div>
+                
+                <div class="auth-buttons" id="authButtons">
+                    <button class="nav-btn" onclick="showLoginModal()">登录</button>
+                    <button class="nav-btn" onclick="showRegisterModal()">注册</button>
+                </div>
+                
+                <div class="user-info" id="userInfo" style="display: none;">
+                    <span class="username" id="usernameDisplay"></span>
+                    <div class="user-actions">
+                        <button class="action-btn" onclick="showPage('create-post')">发帖</button>
+                        <button class="action-btn" onclick="showPage('profile')">我的</button>
+                        <button class="action-btn" onclick="logout()">退出</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 首页 -->
+    <div id="home" class="page-container active">
+        <div class="container">
+            <!-- 轮播图 -->
+            <div class="carousel">
+                <div class="carousel-slide active">
+                    <div class="carousel-caption">
+                        <h2>欢迎来到百度贴吧</h2>
+                        <p>全球最大的中文社区，发现精彩内容</p>
+                        <button class="carousel-btn" onclick="showLoginModal()">立即加入</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 主要内容区域 -->
+            <div class="main-content">
+                <!-- 左侧边栏 - 热门贴吧 -->
+                <div class="sidebar">
+                    <div class="section-header">
+                        <h3 class="section-title">热门贴吧</h3>
+                        <a href="#" class="view-all">查看全部</a>
+                    </div>
+                    <ul class="tieba-list">
+                        <li class="tieba-item">
+                            <div class="tieba-icon">编</div>
+                            <div>
+                                <div class="tieba-name">编程技术</div>
+                                <div class="tieba-members">128万 成员</div>
+                            </div>
+                        </li>
+                        <li class="tieba-item">
+                            <div class="tieba-icon">前</div>
+                            <div>
+                                <div class="tieba-name">前端开发</div>
+                                <div class="tieba-members">86万 成员</div>
+                            </div>
+                        </li>
+                        <li class="tieba-item">
+                            <div class="tieba-icon">后</div>
+                            <div>
+                                <div class="tieba-name">后端架构</div>
+                                <div class="tieba-members">72万 成员</div>
+                            </div>
+                        </li>
+                        <li class="tieba-item">
+                            <div class="tieba-icon">人</div>
+                            <div>
+                                <div class="tieba-name">人工智能</div>
+                                <div class="tieba-members">95万 成员</div>
+                            </div>
+                        </li>
+                        <li class="tieba-item">
+                            <div class="tieba-icon">游</div>
+                            <div>
+                                <div class="tieba-name">游戏开发</div>
+                                <div class="tieba-members">68万 成员</div>
+                            </div>
+                        </li>
+                        <li class="tieba-item">
+                            <div class="tieba-icon">数</div>
+                            <div>
+                                <div class="tieba-name">数据分析</div>
+                                <div class="tieba-members">54万 成员</div>
+                            </div>
+                        </li>
+                        <li class="tieba-item">
+                            <div class="tieba-icon">安</div>
+                            <div>
+                                <div class="tieba-name">网络安全</div>
+                                <div class="tieba-members">42万 成员</div>
+                            </div>
+                        </li>
+                        <li class="tieba-item">
+                            <div class="tieba-icon">移</div>
+                            <div>
+                                <div class="tieba-name">移动开发</div>
+                                <div class="tieba-members">78万 成员</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- 中间内容区域 - 推荐帖子 -->
+                <div class="content-area">
+                    <div class="section-header">
+                        <h3 class="section-title">推荐帖子</h3>
+                        <a href="#" class="view-all">查看全部</a>
+                    </div>
+                    <ul class="post-list">
+                        <li class="post-item">
+                            <a href="#" class="post-title">React 18 新特性深度解析</a>
+                            <div class="post-meta">
+                                <span class="post-author">技术达人</span>
+                                <span>2小时前</span>
+                                <span class="post-tag">前端</span>
+                                <span>256 回复</span>
+                            </div>
+                        </li>
+                        <li class="post-item">
+                            <a href="#" class="post-title">Vue 3 组合式 API 最佳实践</a>
+                            <div class="post-meta">
+                                <span class="post-author">Vue爱好者</span>
+                                <span>4小时前</span>
+                                <span class="post-tag">前端</span>
+                                <span>189 回复</span>
+                            </div>
+                        </li>
+                        <li class="post-item">
+                            <a href="#" class="post-title">微服务架构设计模式详解</a>
+                            <div class="post-meta">
+                                <span class="post-author">架构师</span>
+                                <span>6小时前</span>
+                                <span class="post-tag">后端</span>
+                                <span>312 回复</span>
+                            </div>
+                        </li>
+                        <li class="post-item">
+                            <a href="#" class="post-title">Python 数据分析实战教程</a>
+                            <div class="post-meta">
+                                <span class="post-author">数据科学家</span>
+                                <span>8小时前</span>
+                                <span class="post-tag">数据分析</span>
+                                <span>156 回复</span>
+                            </div>
+                        </li>
+                        <li class="post-item">
+                            <a href="#" class="post-title">Docker 容器化部署指南</a>
+                            <div class="post-meta">
+                                <span class="post-author">运维工程师</span>
+                                <span>10小时前</span>
+                                <span class="post-tag">运维</span>
+                                <span>278 回复</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- 右侧边栏 - 热门话题 -->
+                <div class="sidebar">
+                    <div class="section-header">
+                        <h3 class="section-title">热门话题</h3>
+                        <a href="#" class="view-all">查看全部</a>
+                    </div>
+                    <div class="hot-topics">
+                        <div class="topic-item">
+                            <div class="topic-rank">1</div>
+                            <div class="topic-name">人工智能在编程中的应用</div>
+                            <div class="topic-hot">🔥</div>
+                        </div>
+                        <div class="topic-item">
+                            <div class="topic-rank">2</div>
+                            <div class="topic-name">前端框架选择指南</div>
+                            <div class="topic-hot">🔥</div>
+                        </div>
+                        <div class="topic-item">
+                            <div class="topic-rank">3</div>
+                            <div class="topic-name">程序员职业规划建议</div>
+                            <div class="topic-hot">🔥</div>
+                        </div>
+                        <div class="topic-item">
+                            <div class="topic-rank">4</div>
+                            <div class="topic-name">开源项目贡献经验</div>
+                            <div class="topic-hot">🔥</div>
+                        </div>
+                        <div class="topic-item">
+                            <div class="topic-rank">5</div>
+                            <div class="topic-name">技术面试准备技巧</div>
+                            <div class="topic-hot">🔥</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页脚 -->
+        <footer class="footer">
+            <div class="footer-links">
+                <a href="#" class="footer-link">关于我们</a>
+                <a href="#" class="footer-link">帮助中心</a>
+                <a href="#" class="footer-link">用户协议</a>
+                <a href="#" class="footer-link">隐私政策</a>
+                <a href="#" class="footer-link">联系我们</a>
+            </div>
+            <div class="copyright">
+                © 2024 百度贴吧 - 全球最大的中文社区
+            </div>
+        </footer>
+    </div>
+
+    <!-- 个人中心页面 -->
+    <div id="profile" class="page-container">
+        <div class="container">
+            <div class="profile-header">
+                <div class="avatar" id="userAvatar">用</div>
+                <div class="user-name" id="profileUsername">用户名</div>
+                <div class="user-stats">
+                    <div class="stat-item">
+                        <div class="stat-number" id="postCount">0</div>
+                        <div class="stat-label">发帖数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="replyCount">0</div>
+                        <div class="stat-label">回复数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="followersCount">0</div>
+                        <div class="stat-label">粉丝数</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="posts-section">
+                <h3 class="section-title">我的帖子</h3>
+                <div class="posts-list" id="userPostsList">
+                    <!-- 用户帖子列表将在这里动态生成 -->
+                    <div class="loading">加载中...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 发帖页面 -->
+    <div id="create-post" class="page-container">
+        <div class="container">
+            <div class="post-form">
+                <h2 class="form-title">发布新帖</h2>
+                
+                <div class="form-group">
+                    <label for="postTitle" class="form-label">帖子标题</label>
+                    <input type="text" id="postTitle" class="form-control" placeholder="请输入帖子标题">
+                    <div class="error-message" id="titleError">标题不能为空</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="postCategory" class="form-label">选择贴吧</label>
+                    <select id="postCategory" class="form-control">
+                        <option value="">请选择贴吧</option>
+                        <option value="programming">编程技术</option>
+                        <option value="frontend">前端开发</option>
+                        <option value="backend">后端架构</option>
+                        <option value="ai">人工智能</option>
+                        <option value="game">游戏开发</option>
+                    </select>
+                    <div class="error-message" id="categoryError">请选择贴吧</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="postContent" class="form-label">帖子内容</label>
+                    <div class="editor-toolbar">
+                        <button class="editor-btn" onclick="formatText('bold')"><b>B</b></button>
+                        <button class="editor-btn" onclick="formatText('italic')"><i>I</i></button>
+                        <button class="editor-btn" onclick="formatText('underline')"><u>U</u></button>
+                        <button class="editor-btn" onclick="insertImage()">图片</button>
+                        <button class="editor-btn" onclick="insertLink()">链接</button>
+                    </div>
+                    <div 
+                        id="postContent" 
+                        class="editor-content" 
+                        contenteditable="true" 
+                        placeholder="请输入帖子内容..."
+                    ></div>
+                    <div class="error-message" id="contentError">内容不能为空</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">上传图片</label>
+                    <div class="upload-area" id="uploadArea" onclick="document.getElementById('imageUpload').click()">
+                        <div class="upload-icon">📷</div>
+                        <div class="upload-text">点击或拖拽图片到此处</div>
+                        <div class="upload-hint">支持 JPG、PNG 格式，最大 5MB</div>
+                    </div>
+                    <input type="file" id="imageUpload" accept="image/*" style="display: none" onchange="handleImageUpload(event)">
+                    <div id="imagePreview" class="image-preview"></div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" onclick="showPage('home')">取消</button>
+                    <button type="button" class="btn-submit" onclick="submitPost()">发布帖子</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 登录注册模态框 -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="hideLoginModal()">×</button>
+            
+            <div class="modal-logo">
+                <h1>百度贴吧</h1>
+                <p>全球最大的中文社区</p>
+            </div>
+
+            <div id="loginForm">
+                <div class="form-group">
+                    <label for="loginUsername">用户名</label>
+                    <input type="text" id="loginUsername" placeholder="请输入用户名">
+                    <div class="error-message" id="loginUsernameError">用户名不能为空</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">密码</label>
+                    <input type="password" id="loginPassword" placeholder="请输入密码">
+                    <div class="error-message" id="loginPasswordError">密码不能为空</div>
+                </div>
+
+                <button class="btn btn-primary" onclick="login()">登录</button>
+                <button class="btn btn-secondary" onclick="showRegisterForm()">注册新账号</button>
+
+                <div class="form-switch">
+                    还没有账号？<a href="#" onclick="showRegisterForm()">立即注册</a>
+                </div>
+            </div>
+
+            <div id="registerForm" style="display: none;">
+                <div class="form-group">
+                    <label for="registerUsername">用户名</label>
+                    <input type="text" id="registerUsername" placeholder="请输入用户名">
+                    <div class="error-message" id="registerUsernameError">用户名不能为空</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="registerEmail">邮箱</label>
+                    <input type="email" id="registerEmail" placeholder="请输入邮箱">
+                    <div class="error-message" id="registerEmailError">邮箱格式不正确</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="registerPassword">密码</label>
+                    <input type="password" id="registerPassword" placeholder="请输入密码">
+                    <div class="error-message" id="registerPasswordError">密码不能为空</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="registerConfirmPassword">确认密码</label>
+                    <input type="password" id="registerConfirmPassword" placeholder="请再次输入密码">
+                    <div class="error-message" id="registerConfirmPasswordError">两次密码不一致</div>
+                </div>
+
+                <button class="btn btn-primary" onclick="register()">注册</button>
+                <button class="btn btn-secondary" onclick="showLoginForm()">返回登录</button>
+
+                <div class="form-switch">
+                    已有账号？<a href="#" onclick="showLoginForm()">立即登录</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 用户状态管理
+        let currentUser = null;
+        let userPosts = [];
+
+        // 页面切换函数
+        function showPage(pageId) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page-container').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // 显示指定页面
+            document.getElementById(pageId).classList.add('active');
+            
+            // 如果是个人中心页面，加载用户数据
+            if (pageId === 'profile' && currentUser) {
+                loadUserProfile();
+            }
+        }
+
+        // 登录注册模态框控制
+        function showLoginModal() {
+            document.getElementById('loginModal').classList.add('active');
+            showLoginForm();
+        }
+
+        function hideLoginModal() {
+            document.getElementById('loginModal').classList.remove('active');
+        }
+
+        function showLoginForm() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
+        }
+
+        function showRegisterForm() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+        }
+
+        function showRegisterModal() {
+            document.getElementById('loginModal').classList.add('active');
+            showRegisterForm();
+        }
+
+        // 登录功能
+        function login() {
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            // 简单的验证
+            if (!username) {
+                showError('loginUsernameError', '用户名不能为空');
+                return;
+            }
+            
+            if (!password) {
+                showError('loginPasswordError', '密码不能为空');
+                return;
+            }
+
+            // 模拟登录成功
+            currentUser = {
+                username: username,
+                email: username + '@example.com',
+                postCount: 5,
+                replyCount: 23,
+                followersCount: 128
+            };
+
+            // 更新UI
+            updateUserInterface();
+            hideLoginModal();
+            
+            // 清空表单
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+            
+            alert('登录成功！');
+        }
+
+        // 注册功能
+        function register() {
+            const username = document.getElementById('registerUsername').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirmPassword').value;
+            
+            // 验证
+            if (!username) {
+                showError('registerUsernameError', '用户名不能为空');
+                return;
+            }
+            
+            if (!email || !isValidEmail(email)) {
+                showError('registerEmailError', '请输入有效的邮箱地址');
+                return;
+            }
+            
+            if (!password) {
+                showError('registerPasswordError', '密码不能为空');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showError('registerConfirmPasswordError', '两次密码不一致');
+                return;
+            }
+
+            // 模拟注册成功
+            currentUser = {
+                username: username,
+                email: email,
+                postCount: 0,
+                replyCount: 0,
+                followersCount: 0
+            };
+
+            // 更新UI
+            updateUserInterface();
+            hideLoginModal();
+            
+            // 清空表单
+            document.getElementById('registerUsername').value = '';
+            document.getElementById('registerEmail').value = '';
+            document.getElementById('registerPassword').value = '';
+            document.getElementById('registerConfirmPassword').value = '';
+            
+            alert('注册成功！');
+        }
+
+        // 退出登录
+        function logout() {
+            currentUser = null;
+            userPosts = [];
+            updateUserInterface();
+            showPage('home');
+            alert('已退出登录');
+        }
+
+        // 更新用户界面
+        function updateUserInterface() {
+            const authButtons = document.getElementById('authButtons');
+            const userInfo = document.getElementById('userInfo');
+            
+            if (currentUser) {
+                authButtons.style.display = 'none';
+                userInfo.style.display = 'flex';
+                document.getElementById('usernameDisplay').textContent = currentUser.username;
+            } else {
+                authButtons.style.display = 'flex';
+                userInfo.style.display = 'none';
+            }
+        }
+
+        // 加载用户个人资料
+        function loadUserProfile() {
+            if (!currentUser) return;
+            
+            document.getElementById('userAvatar').textContent = currentUser.username.charAt(0);
+            document.getElementById('profileUsername').textContent = currentUser.username;
+            document.getElementById('postCount').textContent = currentUser.postCount;
+            document.getElementById('replyCount').textContent = currentUser.replyCount;
+            document.getElementById('followersCount').textContent = currentUser.followersCount;
+            
+            // 加载用户帖子
+            loadUserPosts();
+        }
+
+        // 加载用户帖子
+        function loadUserPosts() {
+            const postsList = document.getElementById('userPostsList');
+            
+            if (userPosts.length === 0) {
+                postsList.innerHTML = '<div class="loading">暂无帖子</div>';
+                return;
+            }
+            
+            let html = '';
+            userPosts.forEach((post, index) => {
+                html += `
+                    <div class="post-item">
+                        <div class="post-header">
+                            <a href="#" class="post-title">${post.title}</a>
+                            <span class="post-category">${post.category}</span>
+                        </div>
+                        <div class="post-content">${post.content}</div>
+                        <div class="post-footer">
+                            <span>${post.date}</span>
+                            <div class="post-actions">
+                                <a href="#" class="post-action" onclick="editPost(${index})">编辑</a>
+                                <a href="#" class="post-action" onclick="deletePost(${index})">删除</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            postsList.innerHTML = html;
+        }
+
+        // 发布帖子
+        function submitPost() {
+            if (!currentUser) {
+                alert('请先登录！');
+                showLoginModal();
+                return;
+            }
+            
+            const title = document.getElementById('postTitle').value;
+            const category = document.getElementById('postCategory').value;
+            const content = document.getElementById('postContent').innerHTML;
+            
+            // 验证
+            if (!title) {
+                showError('titleError', '标题不能为空');
+                return;
+            }
+            
+            if (!category) {
+                showError('categoryError', '请选择贴吧');
+                return;
+            }
+            
+            if (!content || content === '<br>') {
+                showError('contentError', '内容不能为空');
+                return;
+            }
+
+            // 创建新帖子
+            const newPost = {
+                title: title,
+                category: document.getElementById('postCategory').options[document.getElementById('postCategory').selectedIndex].text,
+                content: content,
+                date: new Date().toLocaleString(),
+                author: currentUser.username
+            };
+            
+            userPosts.unshift(newPost);
+            currentUser.postCount++;
+            
+            // 清空表单
+            document.getElementById('postTitle').value = '';
+            document.getElementById('postCategory').selectedIndex = 0;
+            document.getElementById('postContent').innerHTML = '';
+            
+            alert('帖子发布成功！');
+            showPage('home');
+        }
+
+        // 文本格式化功能
+        function formatText(command) {
+            document.execCommand(command, false, null);
+            document.getElementById('postContent').focus();
+        }
+
+        function insertImage() {
+            const url = prompt('请输入图片URL:');
+            if (url) {
+                document.execCommand('insertImage', false, url);
+            }
+        }
+
+        function insertLink() {
+            const url = prompt('请输入链接URL:');
+            const text = prompt('请输入链接文本:');
+            if (url && text) {
+                document.execCommand('createLink', false, url);
+            }
+        }
+
+        // 图片上传处理
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.maxWidth = '200px';
+                    img.style.maxHeight = '200px';
+                    
+                    document.getElementById('imagePreview').innerHTML = '';
+                    document.getElementById('imagePreview').appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // 辅助函数
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            
+            setTimeout(() => {
+                errorElement.style.display = 'none';
+            }, 3000);
+        }
+
+        function isValidEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            updateUserInterface();
+            
+            // 点击模态框外部关闭
+            document.getElementById('loginModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    hideLoginModal();
+                }
+            });
+            
+            // 拖拽上传
+            const uploadArea = document.getElementById('uploadArea');
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('dragover');
+            });
+            
+            uploadArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+            });
+            
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleImageUpload({ target: { files: files } });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
